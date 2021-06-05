@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ public class RedirectController {
 
     @GetMapping("/link/{linkId}")
     public ResponseEntity<Object> redirectUrl(@PathVariable int linkId) throws IOException {
-
-        return redirectService.testUrl("https://www.google.com");
+        var resp = redirectService.getLinkFromDataBase(linkId);
+        return redirectService.testUrl(resp.getUrl());
     }
 }

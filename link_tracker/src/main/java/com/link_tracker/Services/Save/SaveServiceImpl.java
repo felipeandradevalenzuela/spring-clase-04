@@ -19,10 +19,7 @@ public class SaveServiceImpl implements ISaveService {
 
     @Override
     public ResponseLinkDTO saveUrl(String url) {
-        if(isValidUrl(url)){
-             listado.saveUrl(url);
-        }
-        return new ResponseLinkDTO(0,true,"TEST");
+        return listado.saveUrl(url, isValidUrl(url));
     }
 
     public boolean isValidUrl(String url){

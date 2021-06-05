@@ -21,7 +21,7 @@ public class SaveController {
     public ResponseEntity<Object> saveUrl(@RequestBody String url){
         ResponseLinkDTO resp = saveService.saveUrl(url);
         if(resp.isStatus()){
-            return new ResponseEntity<>("Su url se guardo con el id: "+resp.getId(), HttpStatus.OK);
+            return new ResponseEntity<>(resp.getDescription(), HttpStatus.OK);
         };
         return new ResponseEntity<>(resp.getDescription(), HttpStatus.OK);
     }
