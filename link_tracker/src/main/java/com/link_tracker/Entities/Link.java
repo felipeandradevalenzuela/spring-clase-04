@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Link {
     private int id;
-    private String url;
-    private boolean status,validation;
+    private String url,password;
+    private boolean validation;
+    private int metrics = 0;
+
 }

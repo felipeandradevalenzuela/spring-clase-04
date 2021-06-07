@@ -20,7 +20,7 @@ public class ListadoRepositoryImpl implements IListadoRepository{
 
 
     @Override
-    public ResponseLinkDTO saveUrl(String url,boolean validation){
+    public ResponseLinkDTO saveUrl(String url,boolean validation,String password){
 
         if(!Files.exists(newFilePath)){
             try {
@@ -31,7 +31,7 @@ public class ListadoRepositoryImpl implements IListadoRepository{
         }
 
         try {
-            writeFile(url,validation);
+            writeFile(url,validation,password);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +39,7 @@ public class ListadoRepositoryImpl implements IListadoRepository{
         return  responsedto;
     }
 
-    private boolean writeFile(String url,boolean validation) throws IOException {
+    private boolean writeFile(String url,boolean validation,String password) throws IOException {
         File file = new File("src/main/resources/listadoUrl.json");
         responsedto = null;
         var objectMapper = new ObjectMapper();
@@ -58,22 +58,15 @@ public class ListadoRepositoryImpl implements IListadoRepository{
 
         //CREAMOS EL OBJETO A PARTIR DE LA URL
         int size = listado.size() == 0 ? 0 : listado.size();
-        Link link = new Link(size,url,false,validation);
+        Link link = new Link(size,url,password,validation,0);
         listado.put(size, link);
         System.out.println(listado);
         //ESCRIBIMOS EL ARCHIVO
-        //     try {
         objectMapper.writeValue(file,listado);
         String estado = validation ? "Valido" : "Invalido";
         responsedto = new ResponseLinkDTO(size,true,"Añadido con exito  a la BD Con el id: "+size +" Y con un estado "+estado);
         return true;
-     /*   } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        responsedto = new ResponseLinkDTO(0,false,"No se logro añadir");
-        return false;
-        */
 
     }
 

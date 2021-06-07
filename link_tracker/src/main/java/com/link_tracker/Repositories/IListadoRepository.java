@@ -4,5 +4,5 @@ import com.link_tracker.DTO.ResponseLinkDTO;
 
 public interface IListadoRepository {
 
-    ResponseLinkDTO saveUrl(String url,boolean validation);
+    ResponseLinkDTO saveUrl(String url,boolean validation,String password);
 }

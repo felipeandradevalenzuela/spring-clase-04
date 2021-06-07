@@ -17,16 +17,19 @@ public class SaveServiceImpl implements ISaveService {
     @Qualifier("ListadoRepository")
     private IListadoRepository listado;
 
+
+
     @Override
-    public ResponseLinkDTO saveUrl(String url) {
-        return listado.saveUrl(url, isValidUrl(url));
+    public ResponseLinkDTO saveUrl(String url,String password) {
+        return listado.saveUrl(url, isValidUrl(url),password);
     }
 
     public boolean isValidUrl(String url){
-        Pattern pattern = Pattern.compile("[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+        // Pattern pattern = Pattern.compile("[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+        Pattern pattern = Pattern.compile( "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
         Matcher matcher = pattern.matcher(url);
-
         return matcher.matches();
+
 
     }
 

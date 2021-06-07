@@ -9,4 +9,6 @@ public interface IRedirectService {
 
     ResponseEntity<Object> testUrl(String url) throws IOException;
     Link getLinkFromDataBase(int id );
+    void sumarContador(int id);
+    void modifyValidation(int id);
 }
