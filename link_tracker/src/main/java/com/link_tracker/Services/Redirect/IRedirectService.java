@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public interface IRedirectService {
 
-    ResponseEntity<Object> testUrl(String url) throws IOException;
-    Link getLinkFromDataBase(int id );
+    Link getLinkFromDataBase(int id);
     void sumarContador(int id);
-    void modifyValidation(int id);
+    Link modifyValidation(int id) throws Exception;
+    Link passwordCompare(int linkId, String password);
 }

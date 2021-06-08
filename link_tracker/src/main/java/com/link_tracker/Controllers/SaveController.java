@@ -13,20 +13,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 public class SaveController {
-
+    
     @Autowired
     @Qualifier("SaveServiceImpl")
     private ISaveService saveService;
 
+    //Método que va a permitir guardar una URL con contraseña.
     @PostMapping("/saveUrl")
-    public ResponseEntity<Object> saveUrl(@RequestBody String url, @RequestParam(defaultValue = "") String password ){
+    public ResponseEntity<ResponseLinkDTO> saveUrl(@RequestBody String url, @RequestParam(defaultValue = "") String password )
+    throws Exception {
         ResponseLinkDTO resp = saveService.saveUrl(url,password);
-        if(resp.isStatus()){
-            return new ResponseEntity<>(resp.getDescription(), HttpStatus.OK);
+        if(resp != null){
+            return new ResponseEntity<ResponseLinkDTO>(resp,HttpStatus.OK);
         }
-        return new ResponseEntity<>(resp.getDescription(), HttpStatus.OK);
+        return  new ResponseEntity<ResponseLinkDTO>(resp,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

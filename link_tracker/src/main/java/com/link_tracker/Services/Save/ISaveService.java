@@ -5,5 +5,5 @@ import com.link_tracker.DTO.ResponseLinkDTO;
 public interface ISaveService {
 
 
-    ResponseLinkDTO saveUrl(String url , String password);
+    ResponseLinkDTO saveUrl(String url , String password) throws Exception;
 }

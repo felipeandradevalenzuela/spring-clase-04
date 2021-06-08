@@ -12,5 +12,4 @@ public class Link {
     private String url,password;
     private boolean validation;
     private int metrics = 0;
-
 }

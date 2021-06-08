@@ -3,8 +3,10 @@ package com.link_tracker.Repositories;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.link_tracker.DTO.ResponseLinkDTO;
 import com.link_tracker.Entities.Link;
+import com.link_tracker.HasCode.HasCodeSecurity;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,68 +14,63 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 @Repository("ListadoRepository")
-public class ListadoRepositoryImpl implements IListadoRepository{
+public class ListadoRepositoryImpl implements IListadoRepository {
 
     private HashMap<Integer, Link> listado = new HashMap<>();
-    private final Path newFilePath = Paths.get("src/main/resources/listadoUrl.json");
-    private ResponseLinkDTO responsedto  = new ResponseLinkDTO();
+    private Path newFilePath = Paths.get("src/main/resources/listadoUrl.json");
+    private ResponseLinkDTO responsedto = new ResponseLinkDTO();
 
 
+    //Método que va a permitir guardar una URL con un password
     @Override
-    public ResponseLinkDTO saveUrl(String url,boolean validation,String password){
+    public ResponseLinkDTO saveUrl(String url, boolean validation, String password) throws Exception {
 
-        if(!Files.exists(newFilePath)){
-            try {
-                Files.createFile(newFilePath);
-            } catch (IOException e) {
-                System.out.println("EL ARCHIVO YA EXISTE \n"+e);
-            }
-        }
+        String pass = HasCodeSecurity.encrypt(password, "ferreira");
 
+        //Verificamos que si el archivo existe o no. Si no existe, se crea.
         try {
-            writeFile(url,validation,password);
+            if (!Files.exists(newFilePath)){
+                Files.createFile(newFilePath);
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("El Archivo ya existe \n" + e);
         }
-
-        return  responsedto;
+        //Invocamos al método writeFIle, que va a escribir en el archivo.
+        writeFile(url, validation, pass);
+        return responsedto;
     }
 
-    private boolean writeFile(String url,boolean validation,String password) throws IOException {
+    //Método que va a escribir en un archivo .json las urls que se van creando.
+    private boolean writeFile(String url, boolean validation, String password) throws Exception {
+        //Obtenemos el archivo donde fue creado.
         File file = new File("src/main/resources/listadoUrl.json");
         responsedto = null;
+
         var objectMapper = new ObjectMapper();
 
-        //Comprueba que el archivo no este vacio
-
-        if (file.length() == 0 ) {
+        //Comprobamos que el archivo no este vacío, si no está vacílo, lo leemos.
+        if (file.length() == 0) {
             System.out.println("No errors, and file empty");
-
-        }
-        else{
-            listado = objectMapper.readValue(file,HashMap.class);
+        } else {
+            listado = objectMapper.readValue(file, HashMap.class);
         }
 
-
-
-        //CREAMOS EL OBJETO A PARTIR DE LA URL
+        //Creamos el objeto a partir de la URL. El parámetro validation indica si la URL es correcta o no (devuelve true o false).
         int size = listado.size() == 0 ? 0 : listado.size();
-        Link link = new Link(size,url,password,validation,0);
-        listado.put(size, link);
-        System.out.println(listado);
-        //ESCRIBIMOS EL ARCHIVO
-        objectMapper.writeValue(file,listado);
-        String estado = validation ? "Valido" : "Invalido";
-        responsedto = new ResponseLinkDTO(size,true,"Añadido con exito  a la BD Con el id: "+size +" Y con un estado "+estado);
-        return true;
+        if (validation == false) {
+            throw new NullPointerException("La URL es inválida");
+        } else {
+            Link link = new Link(size, url, password, validation, 0);
+            listado.put(size, link);
 
+            System.out.println(listado);
 
+            //Escribimos en el Archivo.
+            objectMapper.writeValue(file, listado);
+            String estado = validation ? "Valido" : "Invalido";
+            responsedto = new ResponseLinkDTO(size, true, "Añadido con exito  a la BD Con el id: " + size + " Y con un estado " + estado);
+            return true;
+        }
     }
-
-
-
-
-
-
 
 }
